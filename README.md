@@ -92,14 +92,15 @@ does not by itself mean the number of callbacks is increasing.
 
 The first Store release targets only the fēnix 5. Before publishing, run the simulator tests and validate the end-to-end Liftosaur API flow on a physical fēnix 5, including app settings, starting a supported workout, recording and correcting sets, finishing, offline queue recovery, and the unsupported-workout warning. Test with a non-production account/workout where possible. Do not publish until the Store listing, support contact, privacy/data disclosures, screenshots, and rights to distribute the Liftosaur name and service integration are confirmed.
 
-Install Garmin's Connect IQ SDK and create a developer key. From this directory, run:
+Install Garmin's Connect IQ SDK and create a developer key. For a release, run:
 
 ```powershell
-./run-tests.ps1
-./package.ps1
+./release.ps1 -Version 1.0.0
 ```
 
-This creates the signed, release-mode Store package at `bin/TomsLiftosaurWorkoutCompanion.iq`. The package script targets `fenix5` only; `.iq` files are ignored by version control. Upload the package through the [Garmin Connect IQ Store developer portal](https://apps.garmin.com/en-US/developer/upload), complete the listing, and submit it for Garmin review. Keep the app ID in `manifest.xml` unchanged for future updates.
+The release script requires a clean Jujutsu working copy, runs the simulator tests, packages the app as `bin/TomsLiftosaurWorkoutCompanion-v1.0.0.iq`, embeds `1.0.0` as the Garmin app version without editing `manifest.xml`, and creates the matching `v1.0.0` Jujutsu tag on the current change. Use SemVer: increment the patch for fixes, minor for backward-compatible features, and major for breaking changes. Pick each release version explicitly; the script rejects duplicate tags rather than guessing what kind of release to make. The package script targets `fenix5` only; `.iq` files are ignored by version control. Upload the package through the [Garmin Connect IQ Store developer portal](https://apps.garmin.com/en-US/developer/upload), complete the listing, and submit it for Garmin review. Keep the app ID in `manifest.xml` unchanged for future updates.
+
+To package without creating a Jujutsu tag, run `./package.ps1 -Version 1.0.0`. Running `./package.ps1` with no version preserves the unversioned package behavior. The SDK path and signing key can be overridden with `-SdkPath` and `-DeveloperKey` on either script.
 
 The SDK is not included in this repository. The scripts read the active SDK path from `%APPDATA%/Garmin/ConnectIQ/current-sdk.cfg` and use `~/.garmin/developer_key` by default. Pass `-SdkPath` or `-DeveloperKey` to override either path.
 
