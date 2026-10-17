@@ -34,7 +34,7 @@ if (-not (Test-Path -LiteralPath $DeveloperKey -PathType Leaf)) {
 
 $outputDir = Join-Path $PSScriptRoot 'bin'
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
-$outputPath = Join-Path $outputDir 'LiftosaurWorkout.iq'
+$outputPath = Join-Path $outputDir 'TomsLiftosaurWorkoutCompanion.iq'
 if (Test-Path -LiteralPath $outputPath) {
     Remove-Item -LiteralPath $outputPath -Force
 }

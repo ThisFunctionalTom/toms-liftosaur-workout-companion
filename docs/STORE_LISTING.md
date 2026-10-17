@@ -2,7 +2,7 @@
 
 ## App name
 
-liftosaur-workout
+Toms Liftosaur Workout Companion
 
 ## Short description
 
