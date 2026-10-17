@@ -38,26 +38,12 @@ $outputDir = Join-Path $PSScriptRoot 'bin'
 New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 $outputName = if ($UnitTest) { 'Liftosaur-tests.prg' } else { 'Liftosaur.prg' }
 $outputPath = Join-Path $outputDir $outputName
-$buildInfoPath = Join-Path $PSScriptRoot 'source/LiftosaurBuildInfo.mc'
-$buildId = [DateTime]::UtcNow.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'")
-@(
-    'class LiftosaurBuildInfo {'
-    '    function getBuildId() {'
-    "        return `"$buildId`";"
-    '    }'
-    '}'
-) | Set-Content -LiteralPath $buildInfoPath -Encoding Ascii
-
-try {
-    $compilerArgs = @('-f', (Join-Path $PSScriptRoot 'monkey.jungle'), '-d', 'fenix5', '-y', $DeveloperKey, '-o', $outputPath)
-    if ($UnitTest) { $compilerArgs += '--unit-test' }
-    & $compilerPath @compilerArgs
-    $compileExitCode = $LASTEXITCODE
-} finally {
-    Remove-Item -LiteralPath $buildInfoPath -Force -ErrorAction SilentlyContinue
-}
+$compilerArgs = @('-f', (Join-Path $PSScriptRoot 'monkey.jungle'), '-d', 'fenix5', '-y', $DeveloperKey, '-o', $outputPath)
+if ($UnitTest) { $compilerArgs += '--unit-test' }
+& $compilerPath @compilerArgs
+$compileExitCode = $LASTEXITCODE
 
 if ($compileExitCode -ne 0) {
     exit $compileExitCode
 }
-Write-Output "Built $outputPath (build $buildId)"
+Write-Output "Built $outputPath"

@@ -1,6 +1,5 @@
 using Toybox.Application;
 using Toybox.Application.Storage;
-using Toybox.System;
 using Toybox.Timer;
 using Toybox.WatchUi;
 
@@ -10,8 +9,6 @@ class LiftosaurApp extends Application.AppBase {
 
     function initialize() {
         AppBase.initialize();
-        var buildInfo = new LiftosaurBuildInfo();
-        System.println("[Liftosaur] build=" + buildInfo.getBuildId());
         _store = new LiftosaurStore();
         _view = new LiftosaurView(_store);
     }
