@@ -121,7 +121,7 @@ either path.
 
 This writes `bin/Liftosaur.prg`. To launch it in the Garmin simulator, use the
 SDK's `monkeydo` command with the fēnix 5 simulator. The real watch must be paired
-with a phone running Garmin Connect for Connect IQ HTTP requests.
+with a phone running Garmin Connect for Connect IQ HTTP requests. See [PRIVACY.md](PRIVACY.md) for the app's privacy policy. Once published at a public HTTPS URL, use that URL in the Garmin Store listing.
 
 Open the app's settings in Garmin Connect IQ mobile, enter the Liftosaur API key,
 and sync the setting to the watch. API keys are not stored in this repository.

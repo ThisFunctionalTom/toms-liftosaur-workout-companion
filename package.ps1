@@ -60,6 +60,7 @@ $compilerArgs = @(
 )
 $tempManifestPath = $null
 $tempJunglePath = $null
+$resolvedManifestPath = Join-Path $PSScriptRoot 'manifest.xml'
 if (-not [string]::IsNullOrWhiteSpace($Version)) {
     $manifest = New-Object System.Xml.XmlDocument
     $manifest.PreserveWhitespace = $true
@@ -70,7 +71,9 @@ if (-not [string]::IsNullOrWhiteSpace($Version)) {
     }
     $application.SetAttribute('version', $Version)
 
-    $tempManifestPath = Join-Path ([System.IO.Path]::GetTempPath()) "TomsLiftosaurManifest-$PID-$([guid]::NewGuid().ToString('N')).xml"
+    $tempManifestName = ".TomsLiftosaurManifest-$PID-$([guid]::NewGuid().ToString('N')).xml"
+    $tempManifestPath = Join-Path $PSScriptRoot $tempManifestName
+    $resolvedManifestPath = $tempManifestName
     $writerSettings = New-Object System.Xml.XmlWriterSettings
     $writerSettings.Encoding = New-Object System.Text.UTF8Encoding($false)
     $writer = [System.Xml.XmlWriter]::Create($tempManifestPath, $writerSettings)
@@ -80,15 +83,19 @@ if (-not [string]::IsNullOrWhiteSpace($Version)) {
         $writer.Dispose()
     }
 
+}
+
+$resolvedJunglePath = Join-Path $PSScriptRoot 'monkey.jungle'
+if ($null -ne $tempManifestPath) {
     $tempJunglePath = Join-Path ([System.IO.Path]::GetTempPath()) "TomsLiftosaurJungle-$PID-$([guid]::NewGuid().ToString('N')).jungle"
-    $manifestPath = Join-Path $PSScriptRoot 'manifest.xml'
     $jungle = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'monkey.jungle') -Raw
     $jungle = $jungle.Replace('project.manifest = manifest.xml', "project.manifest = $tempManifestPath")
     $jungle = $jungle.Replace('base.sourcePath = source', "base.sourcePath = $(Join-Path $PSScriptRoot 'source')")
     $jungle = $jungle.Replace('base.resourcePath = resources', "base.resourcePath = $(Join-Path $PSScriptRoot 'resources')")
     Set-Content -LiteralPath $tempJunglePath -Value $jungle -NoNewline -Encoding utf8
-    $compilerArgs[1] = $tempJunglePath
+    $resolvedJunglePath = $tempJunglePath
 }
+$compilerArgs[1] = $resolvedJunglePath
 
 try {
     & $compilerPath @compilerArgs
