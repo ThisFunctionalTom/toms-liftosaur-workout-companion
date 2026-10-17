@@ -90,7 +90,11 @@ stateDiagram-v2
 ## Inputs and transitions
 
 `START` below means a short press. Holding START is recognized from raw key
-events; the hold threshold is 700 ms.
+events; the hold threshold is 700 ms. UP/DOWN navigation presses are delayed
+for up to 450 ms so the delegate can detect a same-direction double-press. A
+double-press of UP or DOWN jumps one exercise; holding DOWN for 700 ms also
+jumps to the next exercise. Holding UP toggles the detail row in `working` and
+`rest`.
 
 Demo mode is a local-only flag over the workout phases. It starts from the
 already downloaded preview with a hold of START, keeps set changes in memory,
@@ -110,13 +114,15 @@ start, set, finish, or discard request is sent for a demo.
 | `working` | Hold START | Enter `editing` for the selected set, including a previously completed set. On a unilateral set, edit left reps first. |
 | `working` | Hold START on a later unfinished set in the same exercise | Do not open the editor; show "Complete earlier sets first". |
 | `working` | UP/DOWN | Browse sets. Moving forward across an exercise boundary makes that exercise active, skipping its predecessor's remaining sets. Moving backward only browses; START on the first unfinished set of any exercise makes it active. Completed sets are green, the next set is blue, and future sets are light gray. |
-| `working` | Hold DOWN | Jump to the next exercise and select its first set. |
+| `working` | Double-press UP | Jump to the previous exercise and select its first set. |
+| `working` | Double-press DOWN or hold DOWN | Jump to the next exercise and select its first set. |
 | `working` | BACK while viewing a set other than the active exercise's next set | Return to that next set. |
 | `working` | BACK on the active exercise's next set | Open `actions`. |
 | `working` | Hold MENU | Toggle the extra row between estimated 1RM and plates per side. |
 | `rest` | START on an upcoming AMRAP set | Skip the rest timer and enter `editing` for that AMRAP set. START otherwise has no action. |
 | `rest` | UP/DOWN | Browse sets while the rest countdown continues. The arc remains visible; completed sets are green, the next set is blue, and future sets are light gray. |
-| `rest` | Hold DOWN | Jump to the next exercise while the rest countdown continues. |
+| `rest` | Double-press UP | Jump to the previous exercise while the rest countdown continues. |
+| `rest` | Double-press DOWN or hold DOWN | Jump to the next exercise while the rest countdown continues. |
 | `rest` | BACK while viewing another set | Return to the next set without canceling rest. |
 | `rest` | BACK on the next set | Cancel rest and preserve the completed set. Go to `working`, or `complete` if it was the last set. |
 | `rest` | Hold MENU | Toggle the extra row between estimated 1RM and plates per side while the timer continues. |
@@ -141,7 +147,8 @@ start, set, finish, or discard request is sent for a demo.
 | `complete` | BACK | Open `actions`. |
 | `complete` | START | Finish and save the workout. |
 | `complete` | UP/DOWN | Reopen a set for review. Moving to an unfinished set resumes `working` from that exercise. |
-| `complete` | Hold DOWN | Jump to the next exercise and resume `working`. |
+| `complete` | Double-press UP | Jump to the previous exercise and resume `working`. |
+| `complete` | Double-press DOWN | Jump to the next exercise and resume `working`. |
 | Active workout | Successful set API response | Adopt server workout, remove the acknowledged queue item, then send the next queued write if present. |
 | Active workout | Failed set API response / retry timer | Keep queued action and retry after the configured delay. |
 

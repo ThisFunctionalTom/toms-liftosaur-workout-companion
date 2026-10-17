@@ -663,6 +663,8 @@ class LiftosaurUpdate {
             } else if (isText(phase, "confirm-undo")) {
                 next["phase"] = "actions";
                 changed = true;
+            } else if (isText(phase, "finishing") || isText(phase, "discarding")) {
+                changed = false;
             } else {
                 changed = undoLastSet(next, model, effects);
             }

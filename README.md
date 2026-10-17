@@ -1,4 +1,4 @@
-# Liftosaur for Garmin fēnix 5
+# liftosaur-workout for Garmin fēnix 5
 
 Personal Connect IQ watch app for controlling Liftosaur workouts. It previews the
 next workout, starts it on the watch, records work sets, runs rest countdowns, and
@@ -87,6 +87,21 @@ large temporary peaks. In File > View Memory, click Refresh for each snapshot
 and enable Peak Memory Detection before reproducing a peak. Sizes including
 children under API Callbacks include the reachable store/model; growth there
 does not by itself mean the number of callbacks is increasing.
+
+## Release package
+
+The first Store release targets only the fēnix 5. Before publishing, run the simulator tests and validate the end-to-end Liftosaur API flow on a physical fēnix 5, including app settings, starting a supported workout, recording and correcting sets, finishing, offline queue recovery, and the unsupported-workout warning. Test with a non-production account/workout where possible. Do not publish until the Store listing, support contact, privacy/data disclosures, screenshots, and rights to distribute the Liftosaur name and service integration are confirmed.
+
+Install Garmin's Connect IQ SDK and create a developer key. From this directory, run:
+
+```powershell
+./run-tests.ps1
+./package.ps1
+```
+
+This creates the signed, release-mode Store package at `bin/LiftosaurWorkout.iq`. The package script targets `fenix5` only; `.iq` files are ignored by version control. Upload the package through the [Garmin Connect IQ Store developer portal](https://apps.garmin.com/en-US/developer/upload), complete the listing, and submit it for Garmin review. Keep the app ID in `manifest.xml` unchanged for future updates.
+
+The SDK is not included in this repository. The scripts read the active SDK path from `%APPDATA%/Garmin/ConnectIQ/current-sdk.cfg` and use `~/.garmin/developer_key` by default. Pass `-SdkPath` or `-DeveloperKey` to override either path.
 
 ## Build
 

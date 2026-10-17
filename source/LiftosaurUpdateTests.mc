@@ -190,7 +190,22 @@ class LiftosaurUpdateTests {
         Test.assert(result.get("model").get("workout") == null);
         Test.assertEqual("Workout saved", result.get("model").get("status"));
         Test.assertEqual("stopTicker", effectOf(result, 0));
-        Test.assertEqual("loadNext", effectOf(result, 1));
+        Test.assertEqual("exitApp", effectOf(result, 1));
+        return true;
+    }
+
+    (:test)
+    static function backDuringSavingOrDiscardingDoesNothing(logger as Test.Logger) as Lang.Boolean {
+        var updater = new LiftosaurUpdate();
+        var phases = ["finishing", "discarding"];
+        for (var i = 0; i < phases.size(); i += 1) {
+            var model = setResultModel();
+            model["phase"] = phases[i];
+            var result = updater.update(model, { "type" => "BACK" }, 100);
+            Test.assertEqual(phases[i], result.get("model").get("phase"));
+            Test.assertEqual(0, result.get("effects").size());
+            Test.assertEqual(2, result.get("model").get("queue").size());
+        }
         return true;
     }
 
